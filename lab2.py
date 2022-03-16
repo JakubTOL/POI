@@ -25,12 +25,12 @@ def point_read_xy():  # definicja funkcji
 
 pointsXY = []  # utworzenie listy
 for p in point_read_xy():
-    pointsXY.extend(p)  # wpisywanie wierszy do listy
+    pointsXY.append(p)  # wpisywanie wierszy do listy
     # print(p)
     # pointsXY.sort()  # sortowanie listy po pierwszym elemencie kazdej krotki
     # points.sort(key=lambda x: x[n]) #sortowanie po n-tym elemencie kazdej krotki lambda jest funkcja anonimowa
-x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY  # TU JEST BLAD OCZYTU
-print(x1)
+x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY
+# TRZEBA WARTOSCI WYDZIELIC NA KOLUMNY !!!!!
 """plt.figure()
 plt.ylabel('x', fontsize=12)
 plt.xlabel('y', fontsize=12)
