@@ -7,7 +7,7 @@ import numpy as np
 """
 1. odczyt plikow csv \/
 2. instalacja pakiety pyransac3d \/
-3. znalezc rozlaczne chmury punktow za pomoca algorytmu k-srednich k=3 ??? --clusteryzacja?
+3. znalezc rozlaczne chmury punktow za pomoca algorytmu k-srednich k=3 \/ --clusteryzacja
 4. dla kazdejc chmury przeprowadzic dopaswoanie plaszczyzny za pomoca ransac
    4.1. wypisac wspolrzedne wektora normalnego do znalezionej plaszczyzny
     4.1.2 czy dana chmura jest placzczynza
@@ -31,14 +31,26 @@ if __name__ == '__main__':
         # pointsXY.sort()  # sortowanie listy po pierwszym elemencie kazdej krotki
         # points.sort(key=lambda x: x[n]) #sortowanie po n-tym elemencie kazdej krotki lambda jest funkcja anonimowa
     x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY
-    # print(x1)
-# TRZEBA WARTOSCI WYDZIELIC NA KOLUMNY !!!!!
-    plt.figure()
+    """plt.figure()
     plt.ylabel('x', fontsize=12)
     plt.xlabel('y', fontsize=12)
     plt.tight_layout()
     plt.scatter(x1, y1)
+    plt.show()"""
+    cluster = KMeans(n_clusters=3)  # stworznie obiektu cluster n_cluster--- liczba clastrow
+    X = np.array(pointsXY)
+    y_pred = cluster.fit_predict(X)  # rozpoznaj cluster i dopasuj sie do niego
+
+    red = y_pred == 0
+    blue = y_pred == 1
+    cyan = y_pred == 2
+
+    plt.figure()
+    plt.scatter(X[red, 0], X[red, 1], c="r")
+    plt.scatter(X[blue, 0], X[blue, 1], c="b")
+    plt.scatter(X[cyan, 0], X[cyan, 1], c="c")
     plt.show()
+
 
 """def point_read_xz():  # definicja funkcji
     with open('CloudPointsXZ.xyz', newline='') as csvfile:
@@ -65,7 +77,4 @@ pointsCyl = []  # utworzenie listy
 for p in point_read_cyl():
     pointsCyl.append(p)  # wpisywanie wierszy do listy"""
 
-"""cluster = KMeans(n_clusters=3)  # stworznie obiektu cluster n_cluster--- liczba clastrow
-X = np.array(clusters)
-cluster.fit(X)
-y_pred = cluster.fit_predict(X)  # rozpoznaj cluster i dopasuj sie do niego"""
+
