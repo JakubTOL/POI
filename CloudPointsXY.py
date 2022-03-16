@@ -4,7 +4,7 @@ from csv import writer
 
 def generate_points(num_points:int=2000): #definicja fukcji z parametrem domyslnym
     #definiowanie obiektow z parametrami rozkladu normalnego
-    distribution_x = norm(loc=0, scale=20)
+    distribution_x = norm(loc=0, scale=200)
     distribution_y = norm(loc=0, scale=200)
     distribution_z = norm(loc=0, scale=0)
 

@@ -23,20 +23,22 @@ def point_read_xy():  # definicja funkcji
             yield x, y, z  # odczytuj i zapamietuj wartosci z tych kolumn
 
 
-pointsXY = []  # utworzenie listy
-for p in point_read_xy():
-    pointsXY.append(p)  # wpisywanie wierszy do listy
-    # print(p)
-    # pointsXY.sort()  # sortowanie listy po pierwszym elemencie kazdej krotki
-    # points.sort(key=lambda x: x[n]) #sortowanie po n-tym elemencie kazdej krotki lambda jest funkcja anonimowa
-x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY
+if __name__ == '__main__':
+    pointsXY = []  # utworzenie listy
+    for p in point_read_xy():
+        pointsXY.append(p)  # wpisywanie wierszy do listy
+        # print(p)
+        # pointsXY.sort()  # sortowanie listy po pierwszym elemencie kazdej krotki
+        # points.sort(key=lambda x: x[n]) #sortowanie po n-tym elemencie kazdej krotki lambda jest funkcja anonimowa
+    x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY
+    # print(x1)
 # TRZEBA WARTOSCI WYDZIELIC NA KOLUMNY !!!!!
-"""plt.figure()
-plt.ylabel('x', fontsize=12)
-plt.xlabel('y', fontsize=12)
-plt.tight_layout()
-plt.scatter(x1, y1)
-plt.show()"""
+    plt.figure()
+    plt.ylabel('x', fontsize=12)
+    plt.xlabel('y', fontsize=12)
+    plt.tight_layout()
+    plt.scatter(x1, y1)
+    plt.show()
 
 """def point_read_xz():  # definicja funkcji
     with open('CloudPointsXZ.xyz', newline='') as csvfile:
