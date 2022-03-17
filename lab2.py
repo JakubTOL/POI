@@ -17,31 +17,25 @@ import numpy as np
 
 def point_read_xy():  # definicja funkcji
     with open('CloudPointsXY.xyz', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+        # odczyt (typ pliku, separator, typ danych - tutaj zeny byly jako float)
+        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
         # next(reader)  # pominiecie naglowka
         for x, y, z in reader:  # wprowadzenie nazw naglowkow
             yield x, y, z  # odczytuj i zapamietuj wartosci z tych kolumn
 
 
 if __name__ == '__main__':
-    pointsXY = []  # utworzenie listy
-    for p in point_read_xy():
-        pointsXY.append(p)  # wpisywanie wierszy do listy
-        # print(p)
-        # pointsXY.sort()  # sortowanie listy po pierwszym elemencie kazdej krotki
-        # points.sort(key=lambda x: x[n]) #sortowanie po n-tym elemencie kazdej krotki lambda jest funkcja anonimowa
-    x1, y1, z1 = zip(*pointsXY)  # wydziel wartosci z tablicy pointsXY
-    """plt.figure()
-    plt.ylabel('x', fontsize=12)
-    plt.xlabel('y', fontsize=12)
-    plt.tight_layout()
-    plt.scatter(x1, y1)
-    plt.show()"""
-    cluster = KMeans(n_clusters=3)  # stworznie obiektu cluster n_cluster--- liczba clastrow
-    X = np.array(pointsXY)
-    y_pred = cluster.fit_predict(X)  # rozpoznaj cluster i dopasuj sie do niego
+    clusters = []  # utworzenie listy
+    for cluster in point_read_xy():
+        clusters.extend(cluster)  # wpisywanie wierszy do listy
 
-    red = y_pred == 0
+    clusterer = KMeans(n_clusters=3)  # stworznie obiektu cluster n_cluster--- liczba clastrow
+    X = np.array(clusters).reshape((2000, 3))  # konwersja macierzy odczytanej 1D do 3D
+    X = np.delete(X, 2, axis=1)  # usun 3 kolumne czyli wspolrzedne z = 0
+    print(X)
+    y_pred = clusterer.fit_predict(X)  # rozpoznaj cluster i dopasuj sie do niego
+
+    red = y_pred == 0  # jesli przydzielone do clustra 0 to czerwone
     blue = y_pred == 1
     cyan = y_pred == 2
 
@@ -49,32 +43,5 @@ if __name__ == '__main__':
     plt.scatter(X[red, 0], X[red, 1], c="r")
     plt.scatter(X[blue, 0], X[blue, 1], c="b")
     plt.scatter(X[cyan, 0], X[cyan, 1], c="c")
+    # plt.tight_layout()
     plt.show()
-
-
-"""def point_read_xz():  # definicja funkcji
-    with open('CloudPointsXZ.xyz', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        # next(reader)  # pominiecie naglowka
-        for x, y, z in reader:  # wprowadzenie nazw naglowkow
-            yield x, y, z  # odczytuj i zapamietuj wartosci z tych kolumn
-
-
-pointsXZ = []  # utworzenie listy
-for p in point_read_xz():
-    pointsXZ.append(p)  # wpisywanie wierszy do listy
-
-
-def point_read_cyl():  # definicja funkcji
-    with open('CloudPointsCyl.xyz', newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        # next(reader)  # pominiecie naglowka
-        for x, y, z in reader:  # wprowadzenie nazw naglowkow
-            yield x, y, z  # odczytuj i zapamietuj wartosci z tych kolumn
-
-
-pointsCyl = []  # utworzenie listy
-for p in point_read_cyl():
-    pointsCyl.append(p)  # wpisywanie wierszy do listy"""
-
-
