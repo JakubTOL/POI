@@ -6,7 +6,7 @@ import numpy
 
 def generate_points(num_points: int = 2000):  # definicja fukcji z parametrem domyslnym
     #definiowanie obiektow z parametrami rozkladu normalnego
-    """distribution_x = norm(loc=0, scale=20)
+    distribution_x = norm(loc=0, scale=20)
     distribution_y = norm(loc=0, scale=200)
     distribution_z = norm(loc=0.2, scale=0.05)
 
@@ -16,13 +16,6 @@ def generate_points(num_points: int = 2000):  # definicja fukcji z parametrem do
 
     #zapis punktow do pliku .csv, ale z roszerzeniem .xyz
     points = zip(x, y, z)  # struktura zawierająca wygenerwoane koorydnaty ale 'zip' stworzył krotki wspolrzednych
-    return points"""
-    #array_of_points = numpy.random.random_integers(0, 10, size=(2000, 3))
-    x = numpy.random.uniform(0, 30, 2000)
-    y = numpy.random.uniform(0, 30, 2000)
-    z = numpy.random.uniform(0, 30, 2000)
-    points = zip(x, y, z)
-
     return points
 
 

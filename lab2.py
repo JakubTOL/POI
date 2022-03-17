@@ -1,6 +1,5 @@
 import csv
 from sklearn.cluster import KMeans
-from scipy.stats import norm
 import pyransac3d as pyrsc
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,7 +31,6 @@ if __name__ == '__main__':
     clusterer = KMeans(n_clusters=3)  # stworznie obiektu cluster n_cluster--- liczba clastrow
     X = np.array(clusters).reshape((2000, 3))  # konwersja macierzy odczytanej 1D do 3D
     X = np.delete(X, 2, axis=1)  # usun 3 kolumne czyli wspolrzedne z = 0
-    print(X)
     y_pred = clusterer.fit_predict(X)  # rozpoznaj cluster i dopasuj sie do niego
 
     red = y_pred == 0  # jesli przydzielone do clustra 0 to czerwone
@@ -43,5 +41,10 @@ if __name__ == '__main__':
     plt.scatter(X[red, 0], X[red, 1], c="r")
     plt.scatter(X[blue, 0], X[blue, 1], c="b")
     plt.scatter(X[cyan, 0], X[cyan, 1], c="c")
-    # plt.tight_layout()
+    plt.tight_layout()
     plt.show()
+
+    points = X
+    plane1 = pyrsc.Plane()
+    best_eq, best_inliers = plane1.fit(points, 0.01)
+    print(best_eq, best_inliers)
