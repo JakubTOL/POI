@@ -1,7 +1,5 @@
 from scipy.stats import norm  # import pakietu rozkładu normalnego
 from csv import writer
-import random
-import numpy
 
 
 def generate_points(num_points: int = 2000):  # definicja fukcji z parametrem domyslnym
