@@ -11,7 +11,7 @@ def generate_points(num_points: int = 2000):  # definicja fukcji z parametrem do
     x = distribution_x.rvs(size=num_points)
     y = distribution_y.rvs(size=num_points)
     z = distribution_z.rvs(size=num_points)
-
+    print(x)
     #zapis punktow do pliku .csv, ale z roszerzeniem .xyz
     points = zip(x, y, z)  # struktura zawierająca wygenerwoane koorydnaty ale 'zip' stworzył krotki wspolrzednych
     return points
