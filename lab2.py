@@ -6,7 +6,7 @@ import pyransac3d as pyrsc
 
 
 def point_read_xy():  # definicja funkcji
-    with open('CloudPointsCyl.xyz', newline='') as csvfile:
+    with open('CloudPointsXY.xyz', newline='') as csvfile:
         # odczyt (typ pliku, separator, typ danych - tutaj zeny byly jako float)
         reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
         # next(reader)  # pominiecie naglowka
@@ -29,6 +29,8 @@ def klasteryzacja():
     plt.scatter(X[blue, 0], X[blue, 1], c="b")
     plt.scatter(X[cyan, 0], X[cyan, 1], c="c")
     plt.tight_layout()
+    plt.xlabel("x")
+    plt.ylabel("y")
     plt.show()
 
 # wybor losowego wiersza z tablicy jako wektory
@@ -41,12 +43,11 @@ def klasteryzacja():
 
     w = vec_uc
     D = -np.sum(np.multiply(w, vc))
-    print(D)
-    threshold = 10
+    print("odleglosc od 0xyz:", D)
+    threshold = 2
     dist = (w * odczyt + D)/(np.linalg.norm(w))
     inliers = np.where(np.abs(dist) <= threshold)
     model_size = len(inliers)
-    print(model_size)
 
 
 if __name__ == '__main__':
