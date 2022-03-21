@@ -19,5 +19,5 @@ wynik = np.concatenate((x, y, z), axis=1)
 
 with open('CloudPointsCyl.xyz', 'w', encoding='utf-8', newline='\n') as csvfile:
     csvwriter = writer(csvfile)
-    for p in wynik:  # iteracja po pakietach punktow 'zip'
+    for p in wynik:
         csvwriter.writerow(p)  # zapisz do pliku konkretna krotke
