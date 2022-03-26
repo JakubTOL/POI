@@ -3,7 +3,9 @@
 
 from skimage import io, exposure  # odczyt zapis plikow, jasnosc
 from skimage.color import rgb2gray  # do konwersji do skali szarosci
-import pandas
+import numpy as np  # do operacji na miaerzach
+import pandas  # do zapisu do csv
+from skimage.feature import match_template
 
 
 # funkcja podzialu dla gresu
@@ -72,7 +74,7 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
             szerokosc2 += 128
 
 
-def odczyt_drewno_grey_scale():
+def odczyt():
 
     # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM
     # odleglosci pikseli 1, 3, 5
@@ -80,15 +82,25 @@ def odczyt_drewno_grey_scale():
     # kazdy wektor uzupelnic o nazwe kategorii tekstury
     # zbior wektorow zapiac do csv
 
-    # odczyt probek
+    # odczyt zdjecia referencyjnego i jego obroka
+    filepath_ref = "D:/new/drewno/drewno.jpg"
+    ref_img = io.imread(filepath_ref)
+    ref_grey = rgb2gray(ref_img)
+    ref_brightness = exposure.adjust_gamma(ref_grey, gamma=5, gain=1)
+
+    # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
     filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
-    img = io.imread(filepath)
+    sample = io.imread(filepath)
     # scikit-image transf do szarosci i glebia jasnosci do 5 bitow:
-    img_gray = rgb2gray(img)  # konwersja do skali szarosci
-    img_brightness = exposure.adjust_gamma(img_gray, gamma=5, gain=1)  # gamma okresla poziom jasnosci
-    io.imshow(img_brightness)  # wyswietlenie dal debugowania co wyszlo
-    io.show()
+    img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+    img_sample_brightness = exposure.adjust_gamma(img_sample_grey, gamma=5, gain=1)  # gamma okresla poziom jasnosci
+    # io.imshow(img_brightness)  # wyswietlenie dal debugowania co wyszlo
+    # io.show()
+
+    #sprawdzanie korelacji probek do zdjecia referencyjnego
+    correlation = match_template(img_sample_brightness, ref_brightness)  # (badany_obiekt, referencja)
+    print(correlation)  # przy porowaniu tych samych zdjec zwrata 1. czyli 100% zgodnosci
 
 
 if __name__ == '__main__':
@@ -97,4 +109,4 @@ if __name__ == '__main__':
     # crop_cegla(0, 128, 0, 128)
     # crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
-    odczyt_drewno_grey_scale()
+    odczyt()
