@@ -59,8 +59,8 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
     image = io.imread(filepath)  # odczyt do zmiennej
     num = 0
     # podzial dla 1 kolumny
-    for i in range(0, 110):
-        if wysokosc2 <= 1152:
+    for i in range(0, 141):
+        if wysokosc2 <= 1408:
             croppped = image[wysokosc1:wysokosc2, szerokosc1:szerokosc2]  # wymiary [od_y1:do_y2, od_x1:do_x2]
             savepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"  # zapis po sciezce z inkrementacja nazwy pliku
             io.imsave(savepath, croppped)  # zapisz img (sciezka, co_zapisac)
