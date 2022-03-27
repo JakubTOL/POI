@@ -6,6 +6,7 @@ from skimage.color import rgb2gray  # do konwersji do skali szarosci
 from skimage.feature import match_template, greycoprops, greycomatrix
 import numpy as np  # do operacji na miaerzach
 import pandas  # do zapisu do csv
+import os  # ustawienie sciezki roboczej dla zapisu csv z pandas
 
 
 # funkcja podzialu dla gresu
@@ -75,15 +76,13 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
 
 
 def odczyt():
-    # odczyt zdjecia referencyjnego i jego obroka
+    """# odczyt zdjecia referencyjnego i jego obroka
     filepath_ref = "D:/new/drewno/drewno.jpg"
     ref_img = io.imread(filepath_ref)
     ref_grey = rgb2gray(ref_img)
-    ref_brightness = exposure.adjust_gamma(ref_grey, gamma=5, gain=1)
-
+    ref_grey = exposure.rescale_intensity(ref_grey, in_range=(5, 64))"""
     # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
-    properies = []
     samples_all = []
     samples_drewno = []
     samples_cegla = []
@@ -91,6 +90,9 @@ def odczyt():
     category = ["drewno", "cegla", "gres"]
     dissimilarity = []
     correlation = []
+    contrast = []
+    energy = []
+    homogenity = []
     for i in range(0, 130):
         # odczyt wycinkow drewna
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
@@ -112,16 +114,28 @@ def odczyt():
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
         img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))
         samples_gres = img_as_uint(img_sample_grey)
+        num += 1  # iteracja dla wczytania kolejnych próbek
 
-        samples_all = samples_drewno + samples_cegla + samples_gres  # zlaczenie wszystkich probek roznych kategorii
-        # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM ]
-        # odleglosci pikseli 1, 3, 5                                              ] to z macierzy glcm
-        # 4 kierunki 0, 45, 90, 135 stopni                                        ]
-        glcm = greycomatrix(samples_all,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
-        dissimilarity.append(greycoprops(glcm, 'dissimilarity')[0, 0])
-        correlation.append(greycoprops(glcm, 'correlation')[0, 0])
-        num += 1
+    # zlaczenie wszystkich probek roznych kategorii
+    samples_all = samples_drewno + samples_cegla + samples_gres
+    # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM ]
+    # odleglosci pikseli 1, 3, 5                                              ] to z macierzy glcm
+    # 4 kierunki 0, 45, 90, 135 stopni                                        ]
+    glcm = greycomatrix(samples_all,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
+    dissimilarity.append(greycoprops(glcm, 'dissimilarity')[0, 0])
+    correlation.append(greycoprops(glcm, 'correlation')[0, 0])
+    contrast.append(greycoprops(glcm, 'contrast')[0, 0])
+    energy.append(greycoprops(glcm, 'energy')[0, 0])
+    homogenity.append(greycoprops(glcm, 'homogenity')[0, 0])
     print(glcm)
+    # zapis obliczonych wartosci do pliku csv za pomoca pakietu pandas
+    os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
+    data = pandas.DataFrame({'dissimialrity':range(dissimilarity),
+                             'correlation':range(correlation),
+                             'contrast':range(contrast),
+                             'energy':range(energy),
+                             'homogenity':range(homogenity)})
+    data.to_csv('properties.csv', sep=",", index=False)
 
 
 if __name__ == '__main__':
