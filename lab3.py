@@ -1,11 +1,11 @@
 # błąd e= l.błędnych klasygikacji/l.wszystkich wektorów
 # dokładność = 1-e  miara działania klasyfikatora
 
-from skimage import io, exposure  # odczyt zapis plikow, jasnosc
+from skimage import io, exposure, img_as_uint  # odczyt zapis plikow, jasnosc
 from skimage.color import rgb2gray  # do konwersji do skali szarosci
+from skimage.feature import match_template, greycoprops, greycomatrix
 import numpy as np  # do operacji na miaerzach
 import pandas  # do zapisu do csv
-from skimage.feature import match_template
 
 
 # funkcja podzialu dla gresu
@@ -90,17 +90,26 @@ def odczyt():
 
     # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
-    filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
-    sample = io.imread(filepath)
-    # scikit-image transf do szarosci i glebia jasnosci do 5 bitow:
-    img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-    img_sample_brightness = exposure.adjust_gamma(img_sample_grey, gamma=5, gain=1)  # gamma okresla poziom jasnosci
-    # io.imshow(img_brightness)  # wyswietlenie dal debugowania co wyszlo
-    # io.show()
+    properies = []
+    probki = []
+    samples_drewno = []
+    category = "drewno"
+    for i in range(0, 99):
+        filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
+        sample = io.imread(filepath)
+        # scikit-image transf do szarosci i glebia jasnosci do 5 bitow:
+        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+        # img_sample_brightness = exposure.adjust_gamma(img_sample_grey,gamma=5,gain=1)  # gamma okresla poziom jasnosci
+        # io.imshow(img_brightness)  # wyswietlenie dal debugowania co wyszlo
+        # io.show()
+        samples_drewno = img_as_uint(img_sample_grey)
 
-    #sprawdzanie korelacji probek do zdjecia referencyjnego
-    correlation = match_template(img_sample_brightness, ref_brightness)  # (badany_obiekt, referencja)
-    print(correlation)  # przy porowaniu tych samych zdjec zwrata 1. czyli 100% zgodnosci
+        glcm = greycomatrix(samples_drewno, distances=[1], angles=[0], levels=64, symmetric=True, normed=True)
+        #sprawdzanie korelacji probek do zdjecia referencyjnego
+        #correlation = match_template(ref_brightness, img_sample_brightness)  # (badany_obiekt, referencja)
+        #properies = correlation
+        num += 1
+    print(glcm)
 
 
 if __name__ == '__main__':
