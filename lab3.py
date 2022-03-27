@@ -98,9 +98,10 @@ def odczyt():
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
         sample = io.imread(filepath)
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))  # głebia jasnosci do 64 poziomu
-        # io.imshow(img_brightness)  # wyswietlenie dla debugowania co wyszlo
-        # io.show()
+        img_sample_grey = exposure.adjust_gamma(img_sample_grey,gamma=5,gain=1)
+        #img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5,64))  # głebia jasnosci do 64 poziomu
+        io.imshow(img_sample_grey)  # wyswietlenie dla debugowania co wyszlo
+        io.show()
         samples_drewno = img_as_uint(img_sample_grey)
         """# odczyt wycinkow cegly
         filepath = "D:/new/cegla/cegla_crop" + str(num) + ".jpg"
@@ -127,13 +128,16 @@ def odczyt():
         contrast = (greycoprops(glcm, 'contrast'))
         energy = (greycoprops(glcm, 'energy'))
         homogeneity = (greycoprops(glcm, 'homogeneity'))
-        print(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
+        #print(dissimilarity, correlation, contrast, energy, homogeneity)
+
+        #properties = zip(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
+        # print(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
         # zapis obliczonych wartosci do pliku csv za pomoca pakietu pandas
-        # os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
-        # data = pandas.DataFrame({dissimilarity, correlation, contrast, energy, homogeneity})
+        #os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
+        #data = pandas.DataFrame(properties)
         # data = pandas.DataFrame([dissimilarity,correlation,contrast,energy,homogeneity])
-        # data = tuple(data)
-        # data.to_csv('properties.csv', sep=",", index=False)
+        #data = tuple(data)
+        #data.to_csv('properties.csv', sep=",", index=False)
 
 
 if __name__ == '__main__':
