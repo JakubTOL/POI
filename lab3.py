@@ -75,10 +75,6 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
 
 
 def odczyt():
-
-    # kazdy wektor uzupelnic o nazwe kategorii tekstury
-    # zbior wektorow zapiac do csv
-
     # odczyt zdjecia referencyjnego i jego obroka
     filepath_ref = "D:/new/drewno/drewno.jpg"
     ref_img = io.imread(filepath_ref)
@@ -88,10 +84,15 @@ def odczyt():
     # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
     properies = []
-    probki = []
+    samples_all = []
     samples_drewno = []
-    category = "drewno"
-    for i in range(0, 99):
+    samples_cegla = []
+    samples_gres = []
+    category = ["drewno", "cegla", "gres"]
+    dissimilarity = []
+    correlation = []
+    for i in range(0, 130):
+        # odczyt wycinkow drewna
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
         sample = io.imread(filepath)
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
@@ -99,12 +100,26 @@ def odczyt():
         # io.imshow(img_brightness)  # wyswietlenie dla debugowania co wyszlo
         # io.show()
         samples_drewno = img_as_uint(img_sample_grey)
+        # odczyt wycinkow cegly
+        filepath = "D:/new/cegla/cegla_crop" + str(num) + ".jpg"
+        sample = io.imread(filepath)
+        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))
+        samples_cegla = img_as_uint(img_sample_grey)
+        # odczyt wycinkow gresu
+        filepath = "D:/new/gres/gres_crop" + str(num) + ".jpg"
+        sample = io.imread(filepath)
+        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))
+        samples_gres = img_as_uint(img_sample_grey)
 
+        samples_all = samples_drewno + samples_cegla + samples_gres  # zlaczenie wszystkich probek roznych kategorii
         # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM ]
         # odleglosci pikseli 1, 3, 5                                              ] to z macierzy glcm
         # 4 kierunki 0, 45, 90, 135 stopni                                        ]
-        glcm = greycomatrix(samples_drewno,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
-
+        glcm = greycomatrix(samples_all,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
+        dissimilarity.append(greycoprops(glcm, 'dissimilarity')[0, 0])
+        correlation.append(greycoprops(glcm, 'correlation')[0, 0])
         num += 1
     print(glcm)
 
