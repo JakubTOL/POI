@@ -76,9 +76,6 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
 
 def odczyt():
 
-    # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM
-    # odleglosci pikseli 1, 3, 5
-    # 4 kierunki 0, 45, 90, 135 stopni
     # kazdy wektor uzupelnic o nazwe kategorii tekstury
     # zbior wektorow zapiac do csv
 
@@ -97,17 +94,17 @@ def odczyt():
     for i in range(0, 99):
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
         sample = io.imread(filepath)
-        # scikit-image transf do szarosci i glebia jasnosci do 5 bitow:
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-        # img_sample_brightness = exposure.adjust_gamma(img_sample_grey,gamma=5,gain=1)  # gamma okresla poziom jasnosci
-        # io.imshow(img_brightness)  # wyswietlenie dal debugowania co wyszlo
+        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))  # głebia jasnosci do 64 poziomu
+        # io.imshow(img_brightness)  # wyswietlenie dla debugowania co wyszlo
         # io.show()
         samples_drewno = img_as_uint(img_sample_grey)
 
-        glcm = greycomatrix(samples_drewno, distances=[1], angles=[0], levels=64, symmetric=True, normed=True)
-        #sprawdzanie korelacji probek do zdjecia referencyjnego
-        #correlation = match_template(ref_brightness, img_sample_brightness)  # (badany_obiekt, referencja)
-        #properies = correlation
+        # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM ]
+        # odleglosci pikseli 1, 3, 5                                              ] to z macierzy glcm
+        # 4 kierunki 0, 45, 90, 135 stopni                                        ]
+        glcm = greycomatrix(samples_drewno,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
+
         num += 1
     print(glcm)
 
