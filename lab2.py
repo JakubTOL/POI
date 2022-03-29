@@ -2,7 +2,6 @@ import csv
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import numpy as np
-import sklearn.linear_model as slm
 #import pyransac3d as pyrsc
 
 
@@ -34,10 +33,7 @@ def klasteryzacja_ransac():
     plt.ylabel("y")
     plt.show()
 
-    threshold = 2
     max_iter = 100
-    max_inliers_count = 0
-    best = []
 
     for iteration in range(0, max_iter):
         # etap 1
@@ -51,24 +47,20 @@ def klasteryzacja_ransac():
         w = vec_uc
         D = -np.sum(np.multiply(w, vc))
         # print("odleglosc od 0xyz:", D)
-        # etap 2
-        inliers_count = 0
-        for i in range(0, len(odczyt)):
-            dist = (w * odczyt + D)/(np.linalg.norm(w))  # odleglosc od plaszczyny
+    # etap 2
+    wx = vec_uc[0]
+    wy = vec_uc[1]
+    wz = vec_uc[2]
+    dist = [(np.abs(wx * odczyt[0] + wy * point[1] + wz * odczyt[2] + D) / np.linalg.norm(vec_uc)) for point in odczyt]
 
-            if np.any(dist) < threshold:
-                inliers_count += 1
+    offset = 0.3
 
-            if inliers_count > max_inliers_count:
-                best = [va, vb, vc]
-                max_inliers_count = inliers_count
+    inliers = []
+    for i in range(0, len(dist)):
+        if dist[i] <= offset:
+            inliers.append(i)
 
-    print(best)
-    """regresja = slm.LinearRegression()
-    regresja.fit(best, X)
-    print('Wyraz wolny jest równy: %s' % round(regresja.intercept_, 3))
-    print('Współczynnik kierunkowy wynosi: %s' % np.round(regresja.coef_, 3))
-    print('Współczynnik dopasowania wynosi: %s' % round(regresja.score(best, X), 3))"""
+    print(inliers)
 
 
 if __name__ == '__main__':
