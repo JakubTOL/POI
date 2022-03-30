@@ -75,69 +75,46 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
             szerokosc2 += 128
 
 
-def odczyt():
+def read_and_calc():
     """# odczyt zdjecia referencyjnego i jego obroka
     filepath_ref = "D:/new/drewno/drewno.jpg"
     ref_img = io.imread(filepath_ref)
-    ref_grey = rgb2gray(ref_img)
-    ref_grey = exposure.rescale_intensity(ref_grey, in_range=(5, 64))"""
+    ref_grey = rgb2gray(ref_img)"""
     # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
-    samples_all = []
+    ang = (0, np.pi/4, np.pi/2, 3*np.pi/4)
+    dist = (1, 3, 5)
     samples_drewno = []
-    samples_cegla = []
-    samples_gres = []
-    category = ["drewno", "cegla", "gres"]
-    dissimilarity = []
-    correlation = []
-    contrast = []
-    energy = []
-    homogeneity = []
+    # category = ['drewno', 'cegla', 'gres']
     for i in range(0, 130):
         # odczyt wycinkow drewna
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
         sample = io.imread(filepath)
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-        img_sample_grey = exposure.adjust_gamma(img_sample_grey,gamma=5,gain=1)
-        #img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5,64))  # głebia jasnosci do 64 poziomu
-        io.imshow(img_sample_grey)  # wyswietlenie dla debugowania co wyszlo
-        io.show()
-        samples_drewno = img_as_uint(img_sample_grey)
-        """# odczyt wycinkow cegly
-        filepath = "D:/new/cegla/cegla_crop" + str(num) + ".jpg"
-        sample = io.imread(filepath)
-        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))
-        samples_cegla = img_as_uint(img_sample_grey)
-        # odczyt wycinkow gresu
-        filepath = "D:/new/gres/gres_crop" + str(num) + ".jpg"
-        sample = io.imread(filepath)
-        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
-        img_sample_grey = exposure.rescale_intensity(img_sample_grey, in_range=(5, 64))
-        samples_gres = img_as_uint(img_sample_grey)"""
+        img_sample_grey_conv = (img_sample_grey/np.max(img_sample_grey)*63).astype('uint8')
+        # io.imshow(img_sample_grey)  # wyswietlenie dla debugowania co wyszlo
+        # io.show()
+        samples_drewno = img_sample_grey_conv
+
         num += 1  # iteracja dla wczytania kolejnych próbek
 
-        # zlaczenie wszystkich probek roznych kategorii
-        # samples_all = samples_drewno + samples_cegla + samples_gres
-        # okreslic dissimilarity, correlation, constrast, energy, homogenity, ASM ]
-        # odleglosci pikseli 1, 3, 5                                              ] to z macierzy glcm
-        # 4 kierunki 0, 45, 90, 135 stopni                                        ]
-        glcm = greycomatrix(samples_drewno,distances=[1,3,5],angles=[0,45,90,135],levels=64,symmetric=True,normed=True)
+        glcm = greycomatrix(samples_drewno,distances=dist,angles=ang,levels=64,symmetric=True,normed=True)
         dissimilarity = (greycoprops(glcm, 'dissimilarity'))
         correlation = (greycoprops(glcm, 'correlation'))
         contrast = (greycoprops(glcm, 'contrast'))
         energy = (greycoprops(glcm, 'energy'))
         homogeneity = (greycoprops(glcm, 'homogeneity'))
-        #print(dissimilarity, correlation, contrast, energy, homogeneity)
+        asm = (greycoprops(glcm, 'ASM'))
+        print(dissimilarity, correlation, contrast, energy, homogeneity, asm)
 
-        #properties = zip(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
-        # print(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
-        # zapis obliczonych wartosci do pliku csv za pomoca pakietu pandas
-        #os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
-        #data = pandas.DataFrame(properties)
-        # data = pandas.DataFrame([dissimilarity,correlation,contrast,energy,homogeneity])
-        #data = tuple(data)
-        #data.to_csv('properties.csv', sep=",", index=False)
+    #properties = zip(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
+    # print(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
+    # zapis obliczonych wartosci do pliku csv za pomoca pakietu pandas
+    #os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
+    #data = pandas.DataFrame(properties)
+    # data = pandas.DataFrame([dissimilarity,correlation,contrast,energy,homogeneity])
+    #data = tuple(data)
+    #data.to_csv('properties.csv', sep=",", index=False)
 
 
 if __name__ == '__main__':
@@ -146,4 +123,4 @@ if __name__ == '__main__':
     # crop_cegla(0, 128, 0, 128)
     # crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
-    odczyt()
+    read_and_calc()
