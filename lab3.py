@@ -1,5 +1,7 @@
 # błąd e= l.błędnych klasygikacji/l.wszystkich wektorów
 # dokładność = 1-e  miara działania klasyfikatora
+# io.imshow(img_sample_grey)  # wyswietlenie dla debugowania co wyszlo
+# io.show()
 
 from skimage import io, exposure, img_as_uint  # odczyt zapis plikow, jasnosc
 from skimage.color import rgb2gray  # do konwersji do skali szarosci
@@ -76,49 +78,35 @@ def crop_drewno(wysokosc1, wysokosc2, szerokosc1, szerokosc2):
 
 
 def read_and_calc():
-    """# odczyt zdjecia referencyjnego i jego obroka
-    filepath_ref = "D:/new/drewno/drewno.jpg"
-    ref_img = io.imread(filepath_ref)
-    ref_grey = rgb2gray(ref_img)"""
     # odczyt kolejnych probek wycietych ze zdejecia ref
     num = 0
+    # parametry do macierzy glcm
     ang = (0, np.pi/4, np.pi/2, 3*np.pi/4)
     dist = (1, 3, 5)
-    samples_drewno = []
-    # category = ['drewno', 'cegla', 'gres']
-    for i in range(0, 130):
+    prop_name = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM')
+    cat = ['drewno']
+    for i in range(1, 130):
         # odczyt wycinkow drewna
         filepath = "D:/new/drewno/drewno_crop" + str(num) + ".jpg"
         sample = io.imread(filepath)
         img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
         img_sample_grey_conv = (img_sample_grey/np.max(img_sample_grey)*63).astype('uint8')
-        # io.imshow(img_sample_grey)  # wyswietlenie dla debugowania co wyszlo
-        # io.show()
-        samples_drewno = img_sample_grey_conv
+        glcm = greycomatrix(img_sample_grey_conv,distances=dist,angles=ang,levels=64,symmetric=True,normed=True)
 
         num += 1  # iteracja dla wczytania kolejnych próbek
+        properties = []
+        for prop in prop_name:
+            properties.extend(list(greycoprops(glcm, prop).flatten()))
 
-        glcm = greycomatrix(samples_drewno,distances=dist,angles=ang,levels=64,symmetric=True,normed=True)
-        dissimilarity = (greycoprops(glcm, 'dissimilarity'))
-        correlation = (greycoprops(glcm, 'correlation'))
-        contrast = (greycoprops(glcm, 'contrast'))
-        energy = (greycoprops(glcm, 'energy'))
-        homogeneity = (greycoprops(glcm, 'homogeneity'))
-        asm = (greycoprops(glcm, 'ASM'))
-        print(dissimilarity, correlation, contrast, energy, homogeneity, asm)
-
-    #properties = zip(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
-    # print(dissimilarity, correlation, contrast, energy, homogeneity, category[0])
-    # zapis obliczonych wartosci do pliku csv za pomoca pakietu pandas
-    #os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
-    #data = pandas.DataFrame(properties)
-    # data = pandas.DataFrame([dissimilarity,correlation,contrast,energy,homogeneity])
-    #data = tuple(data)
-    #data.to_csv('properties.csv', sep=",", index=False)
+    properties.append(cat)
+    print(properties)
+    os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
+    frame = pandas.DataFrame(data=properties, columns=prop_name)  # formatowanie ramki danych
+    frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
 
 
 if __name__ == '__main__':
-    # funkcje do odczzytu zdjeciea z folderu i podzialu na mniejsze fragmenty
+    # funkcje do odczytu zdjeciea z folderu i podzialu na mniejsze fragmenty
     # crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
     # crop_cegla(0, 128, 0, 128)
     # crop_drewno(0, 128, 0, 128)
