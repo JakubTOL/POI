@@ -96,10 +96,9 @@ def read_and_calc():
 
         num += 1  # iteracja dla wczytania kolejnych próbek
         properties = []
-        for prop in (prop_name*129):
+        for prop in prop_name:
             properties.extend(list(greycoprops(glcm, prop).flatten()))
             properties.extend(cat1)
-
     frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
     frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
 
