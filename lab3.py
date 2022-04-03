@@ -84,6 +84,8 @@ def read_and_calc():
     ang = (0, np.pi/4, np.pi/2, 3*np.pi/4)
     dist = (1, 3, 5)
     prop_name = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM')
+    column_names = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM', '0ang', '45ang', '90ang'
+                    '135ang', 'dist1', 'dist3', 'dist5')
     cat = ['drewno']
     for i in range(1, 130):
         # odczyt wycinkow drewna
@@ -97,12 +99,12 @@ def read_and_calc():
         properties = []
         for prop in prop_name:
             properties.extend(list(greycoprops(glcm, prop).flatten()))
+            properties.extend(cat)
+            #print(properties)
 
-    properties.append(cat)
-    print(properties)
-    os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
-    frame = pandas.DataFrame(data=properties, columns=prop_name)  # formatowanie ramki danych
-    frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
+            os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
+            frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
+            frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
 
 
 if __name__ == '__main__':
