@@ -84,8 +84,6 @@ def read_and_calc():
     ang = (0, np.pi/4, np.pi/2, 3*np.pi/4)
     dist = (1, 3, 5)
     prop_name = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM')
-    column_names = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM', '0ang', '45ang', '90ang'
-                    '135ang', 'dist1', 'dist3', 'dist5')
     cat1 = ['drewno']
     os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
     for i in range(1, 130):
@@ -98,14 +96,12 @@ def read_and_calc():
 
         num += 1  # iteracja dla wczytania kolejnych próbek
         properties = []
-        for prop in prop_name:
+        for prop in (prop_name*129):
             properties.extend(list(greycoprops(glcm, prop).flatten()))
             properties.extend(cat1)
-            #print(properties)
 
     frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
     frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
-    print(frame,num)
 
 
 if __name__ == '__main__':
@@ -115,4 +111,3 @@ if __name__ == '__main__':
     # crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
     read_and_calc()
-
