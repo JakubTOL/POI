@@ -9,6 +9,9 @@ from skimage.feature import match_template, greycoprops, greycomatrix
 import numpy as np  # do operacji na miaerzach
 import pandas  # do zapisu do csv
 import os  # ustawienie sciezki roboczej dla zapisu csv z pandas
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 # funkcja podzialu dla gresu
@@ -103,10 +106,23 @@ def read_and_calc():
     frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
 
 
+def klasyfikator():
+    data = pandas.read_csv("D:/new/properties.csv")
+    x = data.drop('category', axis=1)
+    y = data['category']
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20)
+    klasyfikacja = SVC(kernel='linear')
+    klasyfikacja.fit(x_train, y_train)
+    y_pred = klasyfikacja.predict(x_test)
+    print(confusion_matrix(y_test,y_pred))
+    print(classification_report(y_test,y_pred))
+
+
 if __name__ == '__main__':
     # funkcje do odczytu zdjeciea z folderu i podzialu na mniejsze fragmenty
-    # crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
-    # crop_cegla(0, 128, 0, 128)
-    # crop_drewno(0, 128, 0, 128)
+    crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
+    crop_cegla(0, 128, 0, 128)
+    crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
     read_and_calc()
+    klasyfikator()
