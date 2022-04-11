@@ -150,9 +150,9 @@ def klasyfikator():
 
 if __name__ == '__main__':
     # funkcje do odczytu zdjeciea z folderu i podzialu na mniejsze fragmenty
-    #crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
-    #crop_cegla(0, 128, 0, 128)
-    #crop_drewno(0, 128, 0, 128)
+    crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
+    crop_cegla(0, 128, 0, 128)
+    crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
-    #read_and_calc()
+    read_and_calc()
     klasyfikator()
