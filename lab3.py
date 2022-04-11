@@ -97,13 +97,13 @@ def read_and_calc():
         img_sample_grey_conv = (img_sample_grey/np.max(img_sample_grey)*63).astype('uint8')
         glcm = greycomatrix(img_sample_grey_conv,distances=dist,angles=ang,levels=64,symmetric=True,normed=True)
 
-        num += 1  # iteracja dla wczytania kolejnych próbek
         properties = []
         for prop in prop_name:
-            properties.extend(list(greycoprops(glcm, prop).flatten()))
-            properties.extend(cat1)
-    frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
-    frame.to_csv('properties.csv', sep=',', index=False)  # nazwa pliku, uzywany separator, indeksowanie pozycji
+            properties.append(list(greycoprops(glcm, prop).flatten()))
+            properties.append(cat1)
+        frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
+        frame.to_csv('properties.csv', sep=',', index=False, header=False, mode='a')
+        num += 1  # iteracja dla wczytania kolejnych próbek
 
 
 def klasyfikator():
@@ -125,4 +125,4 @@ if __name__ == '__main__':
     crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
     read_and_calc()
-    klasyfikator()
+    #klasyfikator()
