@@ -86,8 +86,10 @@ def read_and_calc():
     # parametry do macierzy glcm
     ang = (0, np.pi/4, np.pi/2, 3*np.pi/4)
     dist = (1, 3, 5)
-    prop_name = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM')
+    prop_name = ('dissimilarity', 'correlation', 'contrast', 'energy', 'homogeneity', 'ASM',)
     cat1 = ['drewno']
+    cat2 = ['cegla']
+    cat3 = ['gres']
     os.chdir('D:/new')  # sciezka robocza dla zapisu csv z pandas
     for i in range(1, 130):
         # odczyt wycinkow drewna
@@ -103,6 +105,36 @@ def read_and_calc():
             properties.append(cat1)
         frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
         frame.to_csv('properties.csv', sep=',', index=False, header=False, mode='a')
+
+        # odczyt wycinkow cegly
+        filepath = "D:/new/cegla/cegla_crop" + str(num) + ".jpg"
+        sample = io.imread(filepath)
+        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+        img_sample_grey_conv = (img_sample_grey / np.max(img_sample_grey) * 63).astype('uint8')
+        glcm = greycomatrix(img_sample_grey_conv, distances=dist, angles=ang, levels=64, symmetric=True, normed=True)
+
+        properties = []
+        for prop in prop_name:
+            properties.append(list(greycoprops(glcm, prop).flatten()))
+            properties.append(cat2)
+        frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
+        frame.to_csv('properties.csv', sep=',', index=False, header=False, mode='a')
+
+        # odczyt wycinkow gresu
+        filepath = "D:/new/cegla/cegla_crop" + str(num) + ".jpg"
+        sample = io.imread(filepath)
+        img_sample_grey = rgb2gray(sample)  # konwersja do skali szarosci
+        img_sample_grey_conv = (img_sample_grey / np.max(img_sample_grey) * 63).astype('uint8')
+        glcm = greycomatrix(img_sample_grey_conv, distances=dist, angles=ang, levels=64, symmetric=True, normed=True)
+
+        properties = []
+        for prop in prop_name:
+            properties.append(list(greycoprops(glcm, prop).flatten()))
+            properties.append(cat3)
+        frame = pandas.DataFrame(data=properties)  # formatowanie ramki danych
+        frame.to_csv('properties.csv', sep=',', index=False, header=False, mode='a')
+
+        # kolejne wycieki do iterowania
         num += 1  # iteracja dla wczytania kolejnych próbek
 
 
