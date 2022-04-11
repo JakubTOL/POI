@@ -138,8 +138,8 @@ def read_and_calc():
 
 def klasyfikator():
     data = pandas.read_csv("D:/new/properties.csv")
-    x = data.drop('category', axis=1)
-    y = data['category']
+    x = data.drop('drewno', axis=1)  # tylko drewno podane, poniewaz jest jako pierwsza wartosc w kolumnie bez naglowka
+    y = data['drewno']
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20)
     klasyfikacja = SVC(kernel='linear')
     klasyfikacja.fit(x_train, y_train)
@@ -150,9 +150,9 @@ def klasyfikator():
 
 if __name__ == '__main__':
     # funkcje do odczytu zdjeciea z folderu i podzialu na mniejsze fragmenty
-    crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
-    crop_cegla(0, 128, 0, 128)
-    crop_drewno(0, 128, 0, 128)
+    #crop_gres(0, 128, 0, 128)  # wywołanie funkcji z parametrami wymiarow [od_y1:do_y2, od_x1:do_x2]
+    #crop_cegla(0, 128, 0, 128)
+    #crop_drewno(0, 128, 0, 128)
     # funkcja odczytu
-    read_and_calc()
-    #klasyfikator()
+    #read_and_calc()
+    klasyfikator()
