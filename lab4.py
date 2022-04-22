@@ -20,7 +20,6 @@ y = data[:,-1]
 
 label_encoder = LabelEncoder()
 int_encoder = label_encoder.fit_transform(y)
-
 onehot_encoder = OneHotEncoder(sparse=False)
 int_encoder = int_encoder.reshape(len(int_encoder),1)
 onehot_encoder = onehot_encoder.fit_transform((int_encoder))
